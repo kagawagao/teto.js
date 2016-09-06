@@ -1,0 +1,77 @@
+@import 'header.less';
+@import 'footer.less';
+@import 'user.less';
+@import 'nav.less';
+
+.app-home {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  .app-home-header {
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+  }
+  .app-main-container {
+    display: flex;
+    height: 100%;
+    padding-top: 4rem;
+    .app-main {
+      width: 100%;
+      padding-left: 14rem;
+      overflow: auto;
+      &>div:not(.breadcrumb) {
+        padding: 10px 8px;
+        height: 100%;
+      }
+      .content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        position: relative;
+        @keyframes ani-coffee {
+          0% {
+            background-position: 0 -260px;
+          }
+          20% {
+            background-position: 0 -520px;
+          }
+          40% {
+            background-position: 0 -780px;
+          }
+          60% {
+            background-position: 0 -1040px;
+          }
+          80% {
+            background-position: 0 -1300px;
+          }
+          100% {
+            background-position: 0 0;
+          }
+        }
+        .coffee {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          margin: auto;
+          width: 204px;
+          height: 260px;
+          background: url(../../../images/coffee.png) no-repeat;
+          -webkit-animation: ani-coffee 1.5s step-start infinite;
+          animation: ani-coffee 1.5s step-start infinite;
+          .welcome {
+            text-align: center;
+            position: relative;
+            padding: 10px;
+            top: 260px;
+          }
+        }
+      }
+    }
+    .app-main.scroll-disabled {
+      overflow: hidden;
+    }
+  }
+}

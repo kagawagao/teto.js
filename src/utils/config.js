@@ -145,7 +145,7 @@ const RBAC_ENABLED = false
  */
 const DISPATCHER = ENV === SIMULATION ? null : {
   // 不走代理的资源
-  ignore: [CS_RES],
+  ignore: [CS_RES, UC_RES],
   res: LOC_RES,
   api: 'dispatcher'
 }

@@ -2,14 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute } from 'react-router'
 import routes from 'routes'
-
-// import 'styles/index.less'
-import 'antd/lib/style/index.less'
-if (__DEV__) {
-  require('styles/index.less')
-}
-
+import Auth from 'utils/auth'
+import {hasAuth} from 'utils/userauth'
 import App from 'app'
+
+import 'styles/index.less'
 
 const asyncLoader = component => (location, cb) => {
   require(`app/${component}`)(c => {
@@ -17,16 +14,26 @@ const asyncLoader = component => (location, cb) => {
   })
 }
 
-const walkRoutes = sets =>
+const routeOnEnter = (oldOnEnter, level, module) => (nextState, replace) => {
+  if (!Auth.hasAuthorization && (nextState.location.pathname.indexOf('/login') === -1)) {
+    replace('/login')
+  }
+  if (!hasAuth(level, module)) {
+    replace('/403')
+  }
+  if (oldOnEnter) {
+    oldOnEnter(nextState, replace)
+  }
+}
+const walkRoutes = (sets, level, module) =>
   Object.keys(sets).map(path => {
     const value = sets[path]
-
     return (
-      <Route key={path} path={path} getComponent={asyncLoader(value.component)}>
+      <Route key={path} path={path} getComponent={asyncLoader(value.component)} onEnter={routeOnEnter(value.onEnter, value.level || level, value.module || module)}>
         { value.indexroute &&
           <IndexRoute getComponent={asyncLoader(value.indexroute)} /> }
         { value.childroutes &&
-          walkRoutes(value.childroutes) }
+          walkRoutes(value.childroutes, value.level || level, value.module || module) }
       </Route>
     )
   })
@@ -66,7 +73,7 @@ export default class extends Component {
   render () {
     return (
       <Provider store={this.props.store}>
-        <div style={{ height: '100%' }}>
+        <div style={{height: '100%'}}>
           {this.content}
           {this.devTools}
         </div>

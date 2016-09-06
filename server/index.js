@@ -6,17 +6,21 @@ import historyApiFallback from 'koa-connect-history-api-fallback'
 import bodyParser from 'koa-bodyparser'
 import serve from 'koa-static'
 import _debug from 'debug'
+import mongodb from 'mongodb'
 import config from '../config'
-// import dispatcher from './middleware/dispatcher'
+import dispatcher from './middleware/dispatcher'
 import mockMiddleware from './middleware/webpack-mock'
-// import dispatcherConfig from '../.shouldnotpublic'
+import dispatcherConfig from '../.shouldnotpublic'
 import webpackDevMiddleware from './middleware/webpack-dev'
 import webpackHMRMiddleware from './middleware/webpack-hmr'
+import authMiddleware from './middleware/auth'
+import tokensMiddleware from './middleware/tokens'
 
 const debug = _debug('app:server')
 const paths = config.utils_paths
 const app = new Koa()
 
+const {mongodbURL} = dispatcherConfig
 // This rewrites all routes requests to the root /index.html file
 // (ignoring file requests). If you want to implement isomorphic
 // rendering, you'll want to remove this middleware.
@@ -32,9 +36,28 @@ if (config.env === 'development') {
 
   // Enable webpack-dev and webpack-hot middleware
   const { publicPath } = webpackConfig.output
-
+  const connectDatabase = async (url) => {
+    const MongoClient = mongodb.MongoClient
+    const database = await MongoClient.connect(url)
+    console.log(database)
+    return database
+  }
+  // const database = new Promise((resolve, reject) => {
+  //   const MongoClient = mongodb.MongoClient
+  //   MongoClient.connect(mongodbURL, (err, db) => {
+  //     if (err) {
+  //       console.log('Unable to connect to the mongoDB server. Error:')
+  //       console.dir(err)
+  //       reject(err)
+  //     } else {
+  //       resolve(db)
+  //     }
+  //   })
+  // })
   app.use(bodyParser())
-  // app.use(dispatcher(dispatcherConfig))
+  app.use(tokensMiddleware())
+  app.use(authMiddleware(connectDatabase(mongodbURL)))
+  app.use(dispatcher(dispatcherConfig))
   app.use(webpackDevMiddleware(compiler, publicPath))
   app.use(webpackHMRMiddleware(compiler))
   // Serve api mocks from ~/mocks

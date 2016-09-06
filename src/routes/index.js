@@ -6,18 +6,18 @@ export default {
     component: 'home/index',
     indexroute: 'home/_indexroute/index',
     childroutes: {
-      login: {
-        title: '登录',
-        component: 'login/index'
-      },
-      logout: {
-        title: '退出',
-        component: 'logout/index'
-      },
-      ...users,
-      '*': {
-        component: 'error/index'
-      }
+      ...users
     }
+  },
+  login: {
+    title: '登录',
+    component: 'login/index'
+  },
+  logout: {
+    title: '退出',
+    component: 'logout/index'
+  },
+  '*': {
+    component: 'error/index'
   }
 }

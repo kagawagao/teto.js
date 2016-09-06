@@ -60,7 +60,7 @@ webpackConfig.plugins = [
   }),
   new CopyWebpackPlugin([
     {
-      from: 'static'
+      from: paths.client('static')
     }
   ], {
     ignore: [
@@ -113,7 +113,9 @@ webpackConfig.eslint = {
 
 const babelLoaderQuery = {
   cacheDirectory: true,
-  plugins: ['transform-runtime', 'transform-decorators-legacy', 'antd'],
+  plugins: ['transform-runtime', 'transform-decorators-legacy', ['antd', {
+    style: true
+  }]],
   presets: ['es2015', 'react', 'stage-0'],
   env: {
     development: {

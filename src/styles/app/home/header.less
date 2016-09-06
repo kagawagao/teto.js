@@ -1,0 +1,28 @@
+@baseColor: #2cb1ed;
+.app-home-header {
+  height: 4rem;
+  line-height: 4rem;
+  display: flex;
+  justify-content: space-between;
+  background-color: @baseColor;
+  .logo {
+    background-color: @baseColor;
+    transition: all .3s ease;
+    width: 14rem;
+    text-align: center;
+    &:hover {
+      background-color: darken(@baseColor, 10%);
+    }
+    a {
+      color: #fff;
+      font-size: 20px;
+    }
+  }
+  .header-right {
+    display: flex;
+    justify-content: space-between;
+    .language {
+      margin-right: 10px;
+    }
+  }
+}

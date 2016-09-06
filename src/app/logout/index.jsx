@@ -2,20 +2,17 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import redirect from 'utils/redirect'
-
 import { logout } from 'redux/actions/tokens'
 
 @connect(state => ({
   ...state.tokens
 }), dispatch => ({
-  ...bindActionCreators({ logout, redirect }, dispatch)
+  ...bindActionCreators({ logout }, dispatch)
 }))
 export default class extends Component {
 
   static propTypes = {
     access_token: PropTypes.string,
-    redirect: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired
   };
   static contextTypes = {
